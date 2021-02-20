@@ -11,12 +11,13 @@
     font-size: 14px;
 }
 .result{
+    width: 100%;
     position: absolute;
     z-index: 999;
     top: 100%;
     left: 0;
     background: white;
-    border-radius: 7px;
+    /* border-radius: 7px; */
 }
 .search-box input[type="text"], .result{
     width: 100%;
@@ -25,14 +26,16 @@
 }
 /* Formatting result items */
 .result p{
+    width: 95%;
     margin: 0;
     padding: 7px 10px;
     border: 1px solid #CCCCCC;
     border-top: none;
     cursor: pointer;
     font-size: 14px;
-    border-radius: 7px;
+    /* border-radius: 7px; */
     font-family: sans-serif;
+    margin-left: 16px;
 }
 .result p:hover{
     background: #f2f2f2;

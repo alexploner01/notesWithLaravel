@@ -33,7 +33,7 @@
 
                 <!-- <h1 class="logo mr-auto"><a href="index.html">Rapid</a></h1>
                 <!-- Uncomment below if you prefer to use an image logo -->
-                <a href="/public/" class="logo mr-auto"><img src="{{ asset('img/logo-website-1024x216.jpg') }}" alt="" class="img-fluid"></a>
+                <a href="/" class="logo mr-auto"><img src="{{ asset('img/logo-website-1024x216.jpg') }}" alt="" class="img-fluid"></a>
 
                 <nav class="main-nav d-none d-lg-block">
                     <ul>
@@ -42,7 +42,7 @@
                             <ul>
 
                                 @foreach($instruments as $instrument)
-                                <li><a href="#">{{ $instrument->name }}</a></li>
+                                <li><a href="#">{{ $instrument->name }} ({{ $instrument->partitur }})</a></li>
                                 @endforeach
 
                             </ul>
@@ -93,6 +93,8 @@
         var instrument = $(this).text();
         var regex = /song(.*)/g;
         $("#selctedInstrumentName").text(instrument);
+
+        instrument = $(this).text().split(" ")[0];
         $.get(window.location.href.replace(regex, "") + "get/pdfname/" + songName + "/" + instrument).done(// getting Instruments of song and displaying them in model.
                 function (data) {
 

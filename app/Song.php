@@ -13,7 +13,7 @@ class Song extends Model {
     }
 
     public static function getSongPdfName($songName, $instrument) {
-        $name_of_pdf = \DB::table('Lied')->select("note.pdf_name")->join('Note', 'note.l_id', '=', 'lied.l_id')->join('Note_instrument', 'note_instrument.n_id', '=', 'note.n_id')->join('Instrument', 'instrument.i_id', '=', 'note_instrument.i_id')->where('lied.name', '=', $songName)->where('instrument.name', "=", $instrument)->get();
+        $name_of_pdf = \DB::table('Lied')->select("Note.pdf_name")->join('Note', 'Note.l_id', '=', 'Lied.l_id')->join('Note_instrument', 'Note_instrument.n_id', '=', 'Note.n_id')->join('Instrument', 'Instrument.i_id', '=', 'Note_instrument.i_id')->where('Lied.name', '=', $songName)->where('Instrument.name', "=", $instrument)->get();
         return $name_of_pdf;
     }
 
@@ -40,19 +40,19 @@ class Song extends Model {
     }
 
     public static function getMatchingSong($songName) {
-        $possibleNames = \DB::table('Lied')->select('lied.name')->where('lied.name', "like", "%" . $songName . "%")->get();
+        $possibleNames = \DB::table('Lied')->select('Lied.name')->where('Lied.name', "like", "%" . $songName . "%")->limit(5)->get();
 
         return $possibleNames;
     }
 
     public static function checkIfSongAlreadyExists($songName) {
-        $possibleNames = \DB::table('Lied')->select('lied.name')->where('lied.name', "=", $songName)->get();
+        $possibleNames = \DB::table('Lied')->select('Lied.name')->where('Lied.name', "=", $songName)->get();
         
         return (strcmp((string) $possibleNames, "[]"));
     }
 
     public static function getIdOfSongByName($songName) {
-        $l_id = \DB::table('Lied')->select('lied.l_id')->where('lied.name', "=", $songName)->get();
+        $l_id = \DB::table('Lied')->select('Lied.l_id')->where('Lied.name', "=", $songName)->get();
         return $l_id[0]->l_id;
     }
 

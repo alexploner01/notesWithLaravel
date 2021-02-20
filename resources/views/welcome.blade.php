@@ -58,7 +58,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
         <link href="css/fresh-bootstrap-table.css" rel="stylesheet" />
         <link href="css/demo.css" rel="stylesheet" />
-        <link href="css/modal.css" rel="stylesheet" />
 
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
         <link href="http://fonts.googleapis.com/css?family=Roboto:400,700,300" rel="stylesheet" type="text/css">
@@ -77,6 +76,7 @@
         <!-- Live search -->
         <script type="text/javascript" src="{{ asset('js/searchResults.js') }}"></script>
         <link href="{{ asset('css/liveSearch.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/modal.css') }}" rel="stylesheet">
 
     </head>
     <body style="background-image: none">
@@ -85,7 +85,7 @@
         <header id="header" class="header-transparent">
             <div class="container d-flex align-items-center">
 
-                <a href="index.html" class="logo mr-auto"><img src="{{ asset('img/logo-website-1024x216.jpg') }}" alt="" class="img-fluid"></a>
+                <a href="/" class="logo mr-auto"><img src="{{ asset('img/logo-website-1024x216.jpg') }}" alt="" class="img-fluid"></a>
 
             </div>
         </header>
@@ -108,14 +108,14 @@
                             </div>
                             <table id="fresh-table" class="table">
                                 <thead>
-                                <th data-field="id" data-sortable="true">ID</th>
+                                <!-- <th data-field="id" data-sortable="true">ID</th> -->
                                 <th data-field="name" data-sortable="true" data-events="operateEvents" >Name</th>
                                 <th data-field="actions" data-formatter="operateFormatter" data-events="operateEvents">Actions</th>
                                 </thead>
                                 <tbody>
                                     @foreach ($songs as $song)
                                     <tr>
-                                        <td>{{ $song->l_id }}</td>
+                                        <!-- <td>{{ $song->l_id }}</td> -->
                                         <td>
                                             <a rel="tooltip" class="table-action select" href="#" title="{{ $song->name }}">
                                                 <i>{{ $song->name }}</i>
@@ -173,12 +173,11 @@
         <!-- end settings user can set for table -->
 
 
-
         <!-- modal form for adding a new Song -->
         <div class="modal fade" id="modalAddSongForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header text-center">
+                    <div class="modal-header text-center" id="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -238,7 +237,6 @@
         </div>
         <!-- end modal form for adding a new Song -->
 
-
         <!-- start select instrument modal -->
         <section id="instrumentsModalSection">
             <div class="modal mx-auto" id="selectInstrumentModal" tabindex="-1" role="dialog">
@@ -290,151 +288,8 @@
     <!-- Template Main JS File -->
     <script src="{{ asset('js/main.js') }}"></script>
 
-    <script type="text/javascript">
-        var $table = $('#fresh-table')
-        var $alertBtn = $('#alertBtn')
+    <script src="{{ asset('js/songTable.js') }}"></script>
 
-        window.operateEvents = {
-            'click .edit': function (e, value, row, index) {
-                alert('You click edit icon, row: ' + JSON.stringify(row));
-                console.log(value, row, index);
-            },
-
-            'click .select': function (e, value, row, index) {
-                //alert('You click edit icon, row: ' + (value.replace(/<[^>]*>/g, "")).trim());
-                //console.log(value, row, index);
-                var songName = (value.replace(/<[^>]*>/g, "")).trim();
-                $('#modalSongTitle').text(songName);
-                $('#gridOfInstruments').html("");
-
-                $.get(window.location.href.replace("#", "") + "get/instruments/" + songName).done(// getting Instruments of song and displaying them in model.
-                        function (data) {
-
-                            var instruments = JSON.parse(data);
-
-                            for (i = 0; i < instruments.length; i++) {
-
-                                newInstrument = "<a href=\"" + window.location.href.replace("#", "") + "song/" + songName + "?i=" + instruments[i].name + "\"> <div class=\"col-md-6 col-lg-4 wow aos-init aos-animate\" data-aos=\"zoom-in\" data-aos-delay=\"100\"> <div class=\"box\"> <img class=\"icon\" src=\"img/instruments-icons/" + instruments[i].name + ".png\" width=\"100px\"> <h4 class=\"title\">" + instruments[i].name + "</a></h4></div></div> </a>";
-
-
-                                $('#gridOfInstruments').append(newInstrument);
-                            }
-
-                        }
-                );
-
-                $('#selectInstrumentModal').modal('show');
-            }
-        }
-
-        function operateFormatter(value, row, index) {
-            return [
-                '<a rel="tooltip" title="Edit" class="table-action edit" href="javascript:void(0)" title="Edit">',
-                '<i class="fa fa-edit"></i>',
-                '</a>'
-            ].join('');
-        }
-
-        $(function () {
-            $table.bootstrapTable({
-                classes: 'table table-hover table-striped',
-                toolbar: '.toolbar',
-                search: true,
-                //showRefresh: true,
-                showToggle: true,
-                showColumns: true,
-                pagination: true,
-                striped: true,
-                sortable: true,
-                pageSize: 8,
-                pageList: [8, 10, 25, 50, 100],
-                formatShowingRows: function (pageFrom, pageTo, totalRows) {
-                    return ''
-                },
-                formatRecordsPerPage: function (pageNumber) {
-                    return pageNumber + ' rows visible'
-                }
-            })
-
-            $alertBtn.click(function () {
-                //alert('You pressed on Alert')
-
-                $('#modalAddSongForm').modal('show');
-            })
-        })
-    </script>
-
-    <script>
-
-        $.ajaxSetup({
-
-            headers: {
-
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-
-            }
-
-        });
-
-
-        $("#uploadButton").click(function () {
-            var songName = $("#nameOfSongToAdd").val();
-            //var fileToUpload = $("#fileToUpload").val();
-
-            var filedata = document.getElementById("fileToUpload").files[0];
-
-            var selectedInstruments = new Array();
-            $('.instrumentsCheckboxes:checkbox:checked').each(function () {
-                var instrument = (this.checked ? $(this).val() : "");
-                selectedInstruments.push(instrument);
-            });
-
-            var partitur = $("#partitur").val();
-
-            if (filedata != null && songName != null && partitur != null && !(selectedInstruments === undefined || selectedInstruments.length == 0)) {
-
-                var data = new FormData();
-                data.append('file', filedata);
-                data.append('songName', songName);
-                data.append('instruments', JSON.stringify(selectedInstruments));
-                data.append('partitur', partitur);
-
-                jQuery.ajax({
-                    url: "{{ route('ajaxRequest.post') }}",
-                    data: data,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    method: 'POST',
-                    type: 'POST', // For jQuery < 1.9
-                    success: function (data) {
-                        alert(data.status);
-                        if (data.status == "success") {
-                            document.getElementById("nameOfSongToAdd").value = "";
-                            document.getElementById("partitur").value = "";
-                            var instruments = document.getElementsByClassName("instrumentsCheckboxes");
-                            
-                            for (i=0; i < instruments.length; i++) {
-                                instruments[i].checked = false;
-                            }
-                         
-                            document.getElementById("fileToUpload").files[0] = null;
-                                                     
-                            $('#modalAddSongForm').modal('hide');
-                        }
-                    }
-                });
-
-                $('#modalAddSongForm').modal('hide');
-
-            } else {
-                alert("Al n'é nia gnü de ete düc i dac!");
-            }
-
-
-
-        });
-
-    </script>
+    <script src="{{ asset('js/uploadModal.js') }}"></script>
 
 </html>

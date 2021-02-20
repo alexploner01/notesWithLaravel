@@ -8,20 +8,20 @@ class Instruments extends Model
 {
     public static function getInstrumentsOfSongByName($name) {
         
-        $instruments = \DB::table('Lied')->select("instrument.name")->join('Note', 'note.l_id', '=', 'lied.l_id')->join('Note_instrument', 'note_instrument.n_id', '=', 'note.n_id')->join('Instrument', 'instrument.i_id', '=', 'note_instrument.i_id')->where('lied.name', '=', $name)->groupBy('name')->get();
+        $instruments = \DB::table('Lied')->select("Instrument.name", "Note.partitur")->join('Note', 'Note.l_id', '=', 'Lied.l_id')->join('Note_instrument', 'Note_instrument.n_id', '=', 'Note.n_id')->join('Instrument', 'Instrument.i_id', '=', 'Note_instrument.i_id')->where('Lied.name', '=', $name)->orderBy('Instrument.i_id', 'asc')->get();
         
         return $instruments;
         
     }
     
     public static function getAllInstruments() {
-        $instruments = \DB::table('Instrument')->select('instrument.name')->get();
+        $instruments = \DB::table('Instrument')->select('Instrument.name')->get();
         
         return $instruments;
     }
     
     public static function getIdOfInstrument($instrument) {
-        $i_id = \DB::table('Instrument')->select('instrument.i_id')->where('instrument.name', '=', $instrument)->get();
+        $i_id = \DB::table('Instrument')->select('Instrument.i_id')->where('Instrument.name', '=', $instrument)->get();
         return $i_id[0]->i_id;
     }
 }
